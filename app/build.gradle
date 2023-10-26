@@ -5,7 +5,7 @@ android {
     compileSdkVersion 34
     defaultConfig {
         applicationId "org.dieschnittstelle.mobile.android.skeleton"
-        minSdkVersion 24
+        minSdk 31
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
