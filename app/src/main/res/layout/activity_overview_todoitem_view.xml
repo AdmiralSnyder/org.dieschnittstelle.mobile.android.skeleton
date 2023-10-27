@@ -7,21 +7,37 @@
 
     <CheckBox
         android:id="@+id/doneCB"
-        app:layout_constraintLeft_toLeftOf="@id/nameTV"
+        app:layout_constraintRight_toLeftOf="@id/nameTV"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <EditText
+    <TextView
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/doneCB"
         android:id="@+id/nameTV"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    </EditText>
-    <EditText xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/descriptionTV"
+        android:layout_width="wrap_content">
+    </TextView>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dueDateTV"
         app:layout_constraintTop_toBottomOf="@id/nameTV"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></EditText>
+        android:layout_height="wrap_content"></TextView>
+    <Button
+        android:text="..."
+        android:id="@+id/showDetailsButton"
+        app:layout_constraintTop_toBottomOf="@id/nameTV"
+        app:layout_constraintLeft_toRightOf="@id/dueDateTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
+    <Button
+        android:text="!"
+        android:id="@+id/toggleIsFavouriteButton"
+        app:layout_constraintTop_toBottomOf="@id/nameTV"
+        app:layout_constraintLeft_toRightOf="@id/showDetailsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

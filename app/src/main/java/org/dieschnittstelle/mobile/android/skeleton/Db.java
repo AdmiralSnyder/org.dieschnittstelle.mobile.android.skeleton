@@ -3,7 +3,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import androidx.annotation.NonNull;
+
 import java.util.Date;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -108,16 +110,16 @@ public class Db
         result.setRemoteID(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_RemoteID));
         result.setName(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_Name));
         result.setDescription(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_Description));
-        result.setIsDone(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsDone) == Boolean.toString(true));
-        result.setIsFavourite(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsFavourite) == Boolean.toString(true));
+        var cursorIsDone = cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsDone);
+        result.setIsDone(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsDone).equals("1"));
+        result.setIsFavourite(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsFavourite).equals("1"));
         var dueDateStr = cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_DueDate);
 
         Date dueDate;
         try
         {
             dueDate = Date.from(Instant.parse(dueDateStr));
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             dueDate = null;
         }
@@ -139,14 +141,13 @@ public class Db
             values.put(DataContracts.TodoItem.COLUMN_NAME_RemoteID, todoItem.getRemoteID());
             values.put(DataContracts.TodoItem.COLUMN_NAME_Name, todoItem.getName());
             values.put(DataContracts.TodoItem.COLUMN_NAME_Description, todoItem.getDescription());
-            values.put(DataContracts.TodoItem.COLUMN_NAME_IsFavourite, todoItem.getIsFavourite());
-            values.put(DataContracts.TodoItem.COLUMN_NAME_IsDone, todoItem.getIsDone());
+            values.put(DataContracts.TodoItem.COLUMN_NAME_IsDone, todoItem.getIsDone() ? "1" : "0");
+            values.put(DataContracts.TodoItem.COLUMN_NAME_IsFavourite, todoItem.getIsFavourite() ? "1" : "0");
             var dueDate = todoItem.getDueDate();
             values.put(DataContracts.TodoItem.COLUMN_NAME_DueDate, dueDate == null ? null : dueDate.toInstant().toString());
 
             if (inserting)
             {
-
                 id = UUID.randomUUID().toString();
                 todoItem.setID(id);
                 values.put(DataContracts.TodoItem.COLUMN_NAME_ID, todoItem.getID());
