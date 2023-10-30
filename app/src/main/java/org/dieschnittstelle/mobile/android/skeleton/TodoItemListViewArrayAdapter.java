@@ -87,8 +87,11 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         doneCB.setChecked(todoItem.getIsDone());
 
         nameTV.setText(todoItem.getName());
-        dueDateTV.setText(todoItem.getDescription());
-
+        var dueDate = todoItem.getDueDate();
+        if (dueDate != null)
+        {
+            dueDateTV.setText(dueDate.getDay() + "." + dueDate.getMonth() + "." + dueDate.getYear() + "  "+ dueDate.getHours() + ":" + dueDate.getMinutes());
+        }
         return result;
     }
 }

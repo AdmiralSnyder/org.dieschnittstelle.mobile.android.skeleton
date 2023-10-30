@@ -34,12 +34,6 @@ public class OverviewActivity extends AppCompatActivity
         TodoAdapter = new TodoItemListViewArrayAdapter(this);
 
         TodoLV.setAdapter(TodoAdapter);
-        TodoLV.setOnItemClickListener((parent, view, position, id) ->
-        {
-            Intent detailViewIntent = new Intent(this, DetailviewActivity.class);
-            detailViewIntent.putExtra("todoItemID", TodoAdapter.getItem(position).getID());
-            startActivity(detailViewIntent);
-        });
     }
 
     @Override

@@ -4,19 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/labelName"
+        android:text="Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
     <EditText
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/nameLabel"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/labelName" />
 
+    <TextView
+        android:id="@+id/labelDescription"
+        android:text="Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/editName"/>
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/descriptionLabel"
-        app:layout_constraintTop_toBottomOf="@id/editName" />
+        app:layout_constraintTop_toBottomOf="@id/labelDescription" />
 
     <CheckBox
         android:id="@+id/checkboxIsDone"
@@ -27,9 +39,11 @@
     <TextView
         android:id="@+id/labelIsDone"
         android:text="Erledigt"
+        android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/editDescription"
         app:layout_constraintLeft_toRightOf="@id/checkboxIsDone"
         android:layout_width="wrap_content"
+        android:paddingVertical="10dp"
         android:layout_height="wrap_content"/>
 
     <CheckBox
@@ -47,6 +61,7 @@
         android:layout_height="wrap_content"/>
 
     <DatePicker
+        android:calendarViewShown="false"
         android:id="@+id/datePickerDueDate"
         android:datePickerMode="spinner"
         android:layout_width="match_parent"
@@ -54,6 +69,7 @@
         android:hint="Fälligkeitsdatum"
         app:layout_constraintTop_toBottomOf="@id/labelIsFavourite" />
     <TimePicker
+        android:timePickerMode="spinner"
         android:id="@+id/timePickerDueDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
