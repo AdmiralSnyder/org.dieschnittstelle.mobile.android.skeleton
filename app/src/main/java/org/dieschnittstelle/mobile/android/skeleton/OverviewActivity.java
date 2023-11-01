@@ -7,9 +7,13 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
-public class OverviewActivity extends AppCompatActivity
+public class OverviewActivity extends AppCompatActivity implements IDataSnapshot
 {
     private ListView TodoLV;
     private ArrayList<TodoItem> Todos = new ArrayList<>();
@@ -34,7 +38,17 @@ public class OverviewActivity extends AppCompatActivity
         TodoAdapter = new TodoItemListViewArrayAdapter(this);
 
         TodoLV.setAdapter(TodoAdapter);
+
+        var ref = FirebaseDatabase.getInstance("https://mad2023todoapp-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("todos");
+//ref.setValue("Hello");
+//        ref.addListenerForSingleValueEvent(new MyValueEventListener(this));
+
+//        ref.setValue("Test");
+        ref.addValueEventListener(new MyValueEventListener(this));
+        ref.get();
+//                .addOnCompleteListener(new MyOnCompleteListener(this));
     }
+    DataSnapshot DataSnapshot;
 
     @Override
     protected void onStart()
@@ -47,4 +61,9 @@ public class OverviewActivity extends AppCompatActivity
     // TODO im onDestroy die Db schließen oder besser im onStart?
     // siehe https://developer.android.com/guide/components/activities/activity-lifecycle
     private void InitDataBase() { Db.Init(getApplicationContext()); }
+
+    @Override
+    public DataSnapshot getDataSnapshot() { return DataSnapshot; }
+    @Override
+    public void setDataSnapshot(DataSnapshot dataSnapshot) { DataSnapshot = dataSnapshot; }
 }
