@@ -1,4 +1,4 @@
-package org.dieschnittstelle.mobile.android.skeleton;
+package org.dieschnittstelle.mobile.android.skeleton.models;
 
 import java.util.Date;
 
@@ -9,10 +9,6 @@ public class TodoItem
     private String ID;
     public String getID() { return ID; }
     public void setID(String id) { this.ID = id; }
-
-    private String RemoteID;
-    public String getRemoteID() { return RemoteID; }
-    public void setRemoteID(String remoteID) { RemoteID = remoteID; }
 
     private String Name;
     public String getName() { return Name; }

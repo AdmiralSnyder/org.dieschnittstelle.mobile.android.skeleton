@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
+import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
+import org.dieschnittstelle.mobile.android.skeleton.pages.TodoDetailviewActivity;
 public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 {
     Context mContext;
@@ -42,7 +43,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
             showDetailsButton.setOnClickListener(view ->
             {
                 TodoItem todoItem2 = (TodoItem)view.getTag();
-                Intent detailViewIntent = new Intent(mContext, DetailviewActivity.class);
+                Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
                 detailViewIntent.putExtra("todoItemID", todoItem2.getID());
                 mContext.startActivity(detailViewIntent);
             });
@@ -51,7 +52,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
             toggleIsFavouriteButton.setOnClickListener(view ->
             {
                 todoItem.setIsFavourite(!todoItem.getIsFavourite());
-                Db.Instance.SetDbObj(todoItem);
+                Storage.SetDbObj(todoItem);
                 view.setBackgroundColor(todoItem.getIsFavourite()
                         ? Color.argb(255, 255, 0, 0)
                         : Color.argb(255, 0, 255, 0));
@@ -66,7 +67,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
                 if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
 
                 todoItem2.setIsDone(doneCB.isChecked());
-                Db.Instance.SetDbObj(todoItem2);
+                Storage.SetDbObj(todoItem2);
             });
         }
         else

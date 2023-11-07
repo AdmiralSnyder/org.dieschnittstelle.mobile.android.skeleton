@@ -1,4 +1,4 @@
-package org.dieschnittstelle.mobile.android.skeleton;
+package org.dieschnittstelle.mobile.android.skeleton.data;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -6,20 +6,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 public class MyValueEventListener implements ValueEventListener
 {
-    public MyValueEventListener(IDataSnapshot dataSnapshotter)
+    private Runnable Continuation;
+
+    public MyValueEventListener(Runnable continuation)
     {
-        DataSnapshotter = dataSnapshotter;
+        Continuation = continuation;
     }
 
-    private  IDataSnapshot DataSnapshotter;
     @Override
     public void onDataChange(@NonNull DataSnapshot snapshot)
     {
-        DataSnapshotter.setDataSnapshot(snapshot);
+        Continuation.run();
     }
-    @Override
-    public void onCancelled(@NonNull DatabaseError error)
-    {
 
-    }
+    @Override
+    public void onCancelled(@NonNull DatabaseError error) { }
 }

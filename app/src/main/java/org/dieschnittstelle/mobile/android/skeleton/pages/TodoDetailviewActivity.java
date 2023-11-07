@@ -1,4 +1,4 @@
-package org.dieschnittstelle.mobile.android.skeleton;
+package org.dieschnittstelle.mobile.android.skeleton.pages;
 
 import android.os.Bundle;
 import android.widget.CheckBox;
@@ -9,11 +9,16 @@ import android.widget.TimePicker;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.dieschnittstelle.mobile.android.skeleton.R;
+import org.dieschnittstelle.mobile.android.skeleton.data.Db;
+import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
+import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
+
 import java.util.Date;
 
-public class DetailviewActivity extends AppCompatActivity
+public class TodoDetailviewActivity extends AppCompatActivity
 {
-    TodoItem TodoItem;
+    org.dieschnittstelle.mobile.android.skeleton.models.TodoItem TodoItem;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -69,17 +74,16 @@ public class DetailviewActivity extends AppCompatActivity
                     datePickerDueDate.getDayOfMonth(),
                     timePickerDueDate.getHour(),
                     timePickerDueDate.getMinute()));
-
             //...
 
-            Db.Instance.SetDbObj(TodoItem);
+            Storage.SetDbObj(TodoItem);
             finish();
         });
 
         var buttonDelete = findViewById(R.id.buttonDelete);
         buttonDelete.setOnClickListener(view ->
         {
-            Db.Instance.DeleteDbObj(TodoItem.getID());
+            Storage.DeleteDbObj(TodoItem);
             finish();
         });
     }

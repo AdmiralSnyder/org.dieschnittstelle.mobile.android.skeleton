@@ -5,4 +5,6 @@
     <string name="nameLabel">Name</string>
     <string name="label_apptitle_loginpage">MAD TODOs</string>
     <string name="URL_FIREBASE">https://mad2023todoapp-default-rtdb.europe-west1.firebasedatabase.app</string>
+    <string name="recreate_local_db">Recreate Local DB</string>
+    <string name="add_todo_item">Add TODO Item...</string>
 </resources>
