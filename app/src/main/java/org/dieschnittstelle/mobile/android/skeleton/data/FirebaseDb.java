@@ -1,15 +1,14 @@
 package org.dieschnittstelle.mobile.android.skeleton.data;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.dieschnittstelle.mobile.android.skeleton.R;
 import org.dieschnittstelle.mobile.android.skeleton.models.Login;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -33,18 +32,16 @@ public class FirebaseDb
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
         var ref = instance.getReference().child("IsOnline");
 
-        final DataSnapshot[] snapshot = {null};
         final boolean[] loginNeeded = {false};
         ref.addValueEventListener(new MyValueEventListener(() -> loginNeeded[0] = true));
         ref.get();
 
-        ScheduledExecutorService scs = new ScheduledThreadPoolExecutor(0);
-        scs.schedule(
-                () ->
-                {
-                    _IsConnected = loginNeeded[0];
-                    ((Activity)Context).runOnUiThread(() -> continuation.accept(loginNeeded[0]));
-                }, 1000, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService scs = new ScheduledThreadPoolExecutor(1);
+        scs.schedule(() ->
+        {
+            _IsConnected = loginNeeded[0];
+            ((Activity)Context).runOnUiThread(() -> continuation.accept(loginNeeded[0]));
+        }, 1000, TimeUnit.MILLISECONDS);
     }
 
     public static void TryLogin(String loginName, String password, Consumer<Boolean> continuation)
@@ -68,16 +65,6 @@ public class FirebaseDb
         }));
     }
 
-    public static void CheckTodos(Consumer<Boolean> continuation)
-    {
-        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
-        var child = instance.getReference().child("TODOs").child(Login.CurrentLogin.getName());
-        child.get().addOnCompleteListener(new FirebaseTodoItemListListener(allTodos ->
-        {
-            ((Activity)Context).runOnUiThread(() -> continuation.accept(!allTodos.isEmpty()));
-        }));
-    }
-
     public static void GetTodos(Consumer<ArrayList<TodoItem>> continuation)
     {
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
@@ -96,6 +83,19 @@ public class FirebaseDb
         child.setValue(todoItem);
     }
 
+    public static void SetDbObjs(ArrayList<TodoItem> todoItems)
+    {
+        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
+        var parent = instance.getReference()
+                .child("TODOs")
+                .child(Login.CurrentLogin.getName());
+        for (var todoItem : todoItems)
+        {
+            var child = parent.child(todoItem.getID());
+            child.setValue(todoItem);
+        }
+    }
+
     public static void DeleteDbObj(TodoItem todoItem)
     {
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
@@ -103,6 +103,15 @@ public class FirebaseDb
                 .child("TODOs")
                 .child(Login.CurrentLogin.getName())
                 .child(todoItem.getID());
+        child.removeValue();
+    }
+
+    public static void DeleteDbObjs()
+    {
+        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
+        var child = instance.getReference()
+                .child("TODOs")
+                .child(Login.CurrentLogin.getName());
         child.removeValue();
     }
 }

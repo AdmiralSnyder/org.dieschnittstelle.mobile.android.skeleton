@@ -31,51 +31,48 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 
         Button toggleIsFavouriteButton;
         CheckBox doneCB;
+        Button showDetailsButton;
 
         if (convertView == null)
         {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.activity_overview_todoitem_view, parent, false);
-
-            convertView.setTag(todoItem);
-            Button showDetailsButton = convertView.findViewById(R.id.showDetailsButton);
-            showDetailsButton.setTag(todoItem);
-            showDetailsButton.setOnClickListener(view ->
-            {
-                TodoItem todoItem2 = (TodoItem)view.getTag();
-                Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
-                detailViewIntent.putExtra("todoItemID", todoItem2.getID());
-                mContext.startActivity(detailViewIntent);
-            });
-
-            toggleIsFavouriteButton = convertView.findViewById(R.id.toggleIsFavouriteButton);
-            toggleIsFavouriteButton.setOnClickListener(view ->
-            {
-                todoItem.setIsFavourite(!todoItem.getIsFavourite());
-                Storage.SetDbObj(todoItem);
-                view.setBackgroundColor(todoItem.getIsFavourite()
-                        ? Color.argb(255, 255, 0, 0)
-                        : Color.argb(255, 0, 255, 0));
-            });
-
-            doneCB = convertView.findViewById(R.id.doneCB);
-            doneCB.setTag(todoItem);
-            doneCB.setOnClickListener(view ->
-            {
-                TodoItem todoItem2 = (TodoItem)view.getTag();
-
-                if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
-
-                todoItem2.setIsDone(doneCB.isChecked());
-                Storage.SetDbObj(todoItem2);
-            });
         }
-        else
+
+        convertView.setTag(todoItem);
+        showDetailsButton = convertView.findViewById(R.id.showDetailsButton);
+        showDetailsButton.setTag(todoItem);
+        showDetailsButton.setOnClickListener(view ->
         {
-            toggleIsFavouriteButton = convertView.findViewById(R.id.toggleIsFavouriteButton);
-            doneCB = convertView.findViewById(R.id.doneCB);
-            convertView.setTag(todoItem);
-        }
+            TodoItem todoItem2 = (TodoItem) view.getTag();
+            Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
+            detailViewIntent.putExtra("todoItemID", todoItem2.getID());
+            mContext.startActivity(detailViewIntent);
+        });
+
+        toggleIsFavouriteButton = convertView.findViewById(R.id.toggleIsFavouriteButton);
+        toggleIsFavouriteButton.setTag((todoItem));
+        toggleIsFavouriteButton.setOnClickListener(view ->
+        {
+            TodoItem todoItem2 = (TodoItem) view.getTag();
+            todoItem2.setIsFavourite(!todoItem2.getIsFavourite());
+            Storage.SetDbObj(todoItem2);
+            view.setBackgroundColor(todoItem2.getIsFavourite()
+                    ? Color.argb(255, 255, 0, 0)
+                    : Color.argb(255, 0, 255, 0));
+        });
+
+        doneCB = convertView.findViewById(R.id.doneCB);
+        doneCB.setTag(todoItem);
+        doneCB.setOnClickListener(view ->
+        {
+            TodoItem todoItem2 = (TodoItem) view.getTag();
+
+            if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
+
+            todoItem2.setIsDone(doneCB.isChecked());
+            Storage.SetDbObj(todoItem2);
+        });
 
         result = convertView;
 
@@ -91,7 +88,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         var dueDate = todoItem.getDueDate();
         if (dueDate != null)
         {
-            dueDateTV.setText(dueDate.getDay() + "." + dueDate.getMonth() + "." + dueDate.getYear() + "  "+ dueDate.getHours() + ":" + dueDate.getMinutes());
+            dueDateTV.setText(dueDate.getDate() + "." + (dueDate.getMonth() + 1) + "." + dueDate.getYear() + "  " + dueDate.getHours() + ":" + dueDate.getMinutes());
         }
         return result;
     }

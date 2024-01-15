@@ -34,33 +34,27 @@ public class FirebaseTodoItemListListener implements OnCompleteListener<DataSnap
             {
                 TodoItem item = null;
                 Map<String, Object> data = (Map<String, Object>) snapshot.getValue(true);
+
                 // doing it myself because date doesn't work
                 item = new TodoItem();
-                item.setID((String)data.get("ID"));
-                item.setName((String)data.get("Name"));
-                item.setDescription((String)data.get("Description"));
+                item.setID((String)data.get("id"));
+                item.setName((String)data.get("name"));
+                item.setDescription((String)data.get("description"));
 
-                var dueDateStr = (String)data.get("DueDate");
+                var dueDateStr = (Map<String, Object>)data.get("dueDate");
 
-                var yearStr = dueDateStr.substring(0, 4);
-                var monthStr = dueDateStr.substring(5, 7);
-                var dayStr = dueDateStr.substring(8, 10);
-                var hourStr = dueDateStr.substring(11, 13);
-                var minStr = dueDateStr.substring(14, 16);
-                var secStr = dueDateStr.substring(17, 19);
+                var year = (Long)dueDateStr.get("year");
+                var month = (Long)dueDateStr.get("month");
+                var day = (Long)dueDateStr.get("day");
+                var hour = (Long)dueDateStr.get("hours");
+                var min = (Long)dueDateStr.get("minutes");
+                var sec = (Long)dueDateStr.get("seconds");
 
-                var year = Integer.parseInt(dueDateStr.substring(0, 4));
-                var month = Integer.parseInt(dueDateStr.substring(5, 7));
-                var day = Integer.parseInt(dueDateStr.substring(9, 10));
-                var hour = Integer.parseInt(dueDateStr.substring(11, 12));
-                var min = Integer.parseInt(dueDateStr.substring(14, 15));
-                var sec = Integer.parseInt(dueDateStr.substring(17, 18));
-
-                var date = new Date(year - 1900, month, day, hour, min, sec);
+                var date = new Date(year.intValue() - 1900, month.intValue(), day.intValue(), hour.intValue(), min.intValue(), sec.intValue());
 //                date.setYear();
                 item.setDueDate(date);
-                item.setIsDone((Boolean)data.get("IsDone"));
-                item.setIsFavourite((Boolean)data.get("IsFavourite"));
+                item.setIsDone((Boolean)data.get("isDone"));
+                item.setIsFavourite((Boolean)data.get("isFavourite"));
 
                 list.add(item);
             }

@@ -44,6 +44,25 @@ public class Db
         }
     }
 
+    public boolean HasDbObjs()
+    {
+        SQLiteDatabase db = OpenHelper.getReadableDatabase();
+        try
+        {
+            var cursor = db.query(DataContracts.TodoItem.TABLE_NAME, null, null, null, null, null, null);
+            try
+            {
+                return cursor.moveToNext();
+            } finally
+            {
+                cursor.close();
+            }
+        } finally
+        {
+            db.close();
+        }
+    }
+
     public ArrayList<TodoItem> GetDbObjs()
     {
         SQLiteDatabase db = OpenHelper.getReadableDatabase();

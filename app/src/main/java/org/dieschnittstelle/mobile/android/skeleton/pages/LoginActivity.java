@@ -71,23 +71,9 @@ public class LoginActivity extends AppCompatActivity
             {
                 if (loggedIn)
                 {
-                    FirebaseDb.CheckTodos(hasTodos ->
+                    Storage.Sync(() ->
                     {
-                        if (hasTodos)
-                        {
-                            Db.Instance.ClearDbObjsAsync();
-                            FirebaseDb.GetTodos(todos ->
-                            {
-                                Db.Instance.SetDbObjsAsync(todos);
-                                Intent detailViewIntent = new Intent(This, TodoOverviewActivity.class);
-                                startActivity(detailViewIntent);
-                            });
-                        }
-                        else
-                        {
-                            Intent detailViewIntent = new Intent(This, TodoOverviewActivity.class);
-                            startActivity(detailViewIntent);
-                        }
+                        startActivity(new Intent(This, TodoOverviewActivity.class));
                     });
                 }
                 else

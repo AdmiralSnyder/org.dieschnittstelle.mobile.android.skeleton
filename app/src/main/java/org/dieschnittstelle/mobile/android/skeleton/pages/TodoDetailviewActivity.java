@@ -18,7 +18,10 @@ import java.util.Date;
 
 public class TodoDetailviewActivity extends AppCompatActivity
 {
-    org.dieschnittstelle.mobile.android.skeleton.models.TodoItem TodoItem;
+    // TODO Sicherheitsabfrage vor dem Löschen
+    // TODO Datum+Uhrzeit ändern mit backing Date
+
+    TodoItem TodoItem;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -53,7 +56,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
         Date dueDate = TodoItem.getDueDate();
         if (dueDate != null)
         {
-            datePickerDueDate.updateDate(dueDate.getYear(), dueDate.getMonth(), dueDate.getDay());
+            datePickerDueDate.updateDate(dueDate.getYear(), dueDate.getMonth(), dueDate.getDate());
             timePickerDueDate.setHour(dueDate.getHours());
             timePickerDueDate.setMinute(dueDate.getMinutes());
         }
