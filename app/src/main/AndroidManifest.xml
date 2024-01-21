@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pages.LoginActivity" android:exported="true">
+<!--        // TODO prüfen, ob das das Zurückspringen aufs login tatsächlich verhindert.-->
+        <activity android:name=".pages.LoginActivity" android:exported="true" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -37,24 +37,14 @@ public class FirebaseTodoItemListListener implements OnCompleteListener<DataSnap
 
                 // doing it myself because date doesn't work
                 item = new TodoItem();
-                item.setID((String)data.get("id"));
-                item.setName((String)data.get("name"));
-                item.setDescription((String)data.get("description"));
+                item.setID((String)data.get("ID"));
+                item.setName((String)data.get("Name"));
+                item.setDescription((String)data.get("Description"));
 
-                var dueDateStr = (Map<String, Object>)data.get("dueDate");
-
-                var year = (Long)dueDateStr.get("year");
-                var month = (Long)dueDateStr.get("month");
-                var day = (Long)dueDateStr.get("day");
-                var hour = (Long)dueDateStr.get("hours");
-                var min = (Long)dueDateStr.get("minutes");
-                var sec = (Long)dueDateStr.get("seconds");
-
-                var date = new Date(year.intValue() - 1900, month.intValue(), day.intValue(), hour.intValue(), min.intValue(), sec.intValue());
-//                date.setYear();
-                item.setDueDate(date);
-                item.setIsDone((Boolean)data.get("isDone"));
-                item.setIsFavourite((Boolean)data.get("isFavourite"));
+                var dueDateStr = (String)data.get("DueDate");
+                item.setDueDateStr(dueDateStr);
+                item.setIsDone((Boolean)data.get("IsDone"));
+                item.setIsFavourite((Boolean)data.get("IsFavourite"));
 
                 list.add(item);
             }

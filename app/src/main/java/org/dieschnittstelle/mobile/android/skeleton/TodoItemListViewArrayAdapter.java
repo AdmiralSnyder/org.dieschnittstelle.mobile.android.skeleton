@@ -10,9 +10,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
 import org.dieschnittstelle.mobile.android.skeleton.pages.TodoDetailviewActivity;
+
+import java.util.Date;
 public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 {
     Context mContext;
@@ -32,8 +36,10 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         Button toggleIsFavouriteButton;
         CheckBox doneCB;
         Button showDetailsButton;
+        ConstraintLayout constraintLayout_todoItem;
 
-        if (convertView == null)
+        var newView = convertView == null;
+        if (newView)
         {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.activity_overview_todoitem_view, parent, false);
@@ -42,53 +48,65 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         convertView.setTag(todoItem);
         showDetailsButton = convertView.findViewById(R.id.showDetailsButton);
         showDetailsButton.setTag(todoItem);
-        showDetailsButton.setOnClickListener(view ->
-        {
-            TodoItem todoItem2 = (TodoItem) view.getTag();
-            Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
-            detailViewIntent.putExtra("todoItemID", todoItem2.getID());
-            mContext.startActivity(detailViewIntent);
-        });
 
         toggleIsFavouriteButton = convertView.findViewById(R.id.toggleIsFavouriteButton);
         toggleIsFavouriteButton.setTag((todoItem));
-        toggleIsFavouriteButton.setOnClickListener(view ->
-        {
-            TodoItem todoItem2 = (TodoItem) view.getTag();
-            todoItem2.setIsFavourite(!todoItem2.getIsFavourite());
-            Storage.SetDbObj(todoItem2);
-            view.setBackgroundColor(todoItem2.getIsFavourite()
-                    ? Color.argb(255, 255, 0, 0)
-                    : Color.argb(255, 0, 255, 0));
-        });
+
+        constraintLayout_todoItem = convertView.findViewById(R.id.constraintLayout_todoItem);
 
         doneCB = convertView.findViewById(R.id.doneCB);
         doneCB.setTag(todoItem);
-        doneCB.setOnClickListener(view ->
+
+        if (newView)
         {
-            TodoItem todoItem2 = (TodoItem) view.getTag();
+            showDetailsButton.setOnClickListener(view ->
+            {
+                TodoItem todoItem2 = (TodoItem) view.getTag();
+                Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
+                detailViewIntent.putExtra("todoItemID", todoItem2.getID());
+                mContext.startActivity(detailViewIntent);
+            });
 
-            if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
+            toggleIsFavouriteButton.setOnClickListener(view ->
+            {
+                TodoItem todoItem2 = (TodoItem) view.getTag();
+                todoItem2.setIsFavourite(!todoItem2.getIsFavourite());
+                Storage.SetDbObj(todoItem2);
+                view.setBackgroundColor(todoItem2.getIsFavourite()
+                        ? Color.argb(255, 255, 0, 0)
+                        : Color.argb(255, 0, 255, 0));
+            });
 
-            todoItem2.setIsDone(doneCB.isChecked());
-            Storage.SetDbObj(todoItem2);
-        });
+            doneCB.setOnClickListener(view ->
+            {
+                TodoItem todoItem2 = (TodoItem) view.getTag();
+
+                if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
+
+                todoItem2.setIsDone(doneCB.isChecked());
+                Storage.SetDbObj(todoItem2);
+            });
+        }
 
         result = convertView;
-
-        TextView nameTV = result.findViewById(R.id.nameTV);
-        TextView dueDateTV = result.findViewById(R.id.dueDateTV);
 
         toggleIsFavouriteButton.setBackgroundColor(todoItem.getIsFavourite()
                 ? Color.argb(255, 255, 0, 0)
                 : Color.argb(255, 0, 255, 0));
         doneCB.setChecked(todoItem.getIsDone());
 
+        constraintLayout_todoItem.setBackgroundColor(!todoItem.getIsDone() && todoItem.getDueDate().before(new Date())
+                ? Color.argb(255, 120, 255, 255)
+                : Color.argb(255, 255, 255, 255));
+
+        TextView nameTV = result.findViewById(R.id.nameTV);
         nameTV.setText(todoItem.getName());
+
         var dueDate = todoItem.getDueDate();
         if (dueDate != null)
         {
-            dueDateTV.setText(dueDate.getDate() + "." + (dueDate.getMonth() + 1) + "." + dueDate.getYear() + "  " + dueDate.getHours() + ":" + dueDate.getMinutes());
+            TextView dueDateTV = result.findViewById(R.id.dueDateTV);
+            dueDateTV.setText(String.format("%1$td.%1$tm.%1$tY  %1$tH:%1$tM", dueDate));
         }
         return result;
     }

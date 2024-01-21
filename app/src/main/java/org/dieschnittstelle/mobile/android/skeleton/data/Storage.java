@@ -36,11 +36,11 @@ public class Storage
         * */
         if (Db.Instance.HasDbObjs())
         {
-            SyncDown(continuation);
+            SyncUp(continuation);
         }
         else
         {
-            SyncUp(continuation);
+            SyncDown(continuation);
         }
     }
 

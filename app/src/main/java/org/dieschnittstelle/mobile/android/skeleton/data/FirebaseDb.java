@@ -1,7 +1,9 @@
 package org.dieschnittstelle.mobile.android.skeleton.data;
 import android.app.Activity;
 import android.content.Context;
+import android.os.SystemClock;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.dieschnittstelle.mobile.android.skeleton.R;
@@ -49,6 +51,8 @@ public class FirebaseDb
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
         var child = instance.getReference().child("Users");
 
+        SystemClock.sleep(2000);
+
         child.get().addOnCompleteListener(new FirebaseLoginListListener(allLogins ->
         {
             boolean result = false;
@@ -67,28 +71,20 @@ public class FirebaseDb
 
     public static void GetTodos(Consumer<ArrayList<TodoItem>> continuation)
     {
-        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
-        var child = instance.getReference().child("TODOs").child(Login.CurrentLogin.getName());
+        var child = GetLoginNode();
         child.get().addOnCompleteListener(new FirebaseTodoItemListListener(allTodos ->
         ((Activity)Context).runOnUiThread(() -> continuation.accept(allTodos))));
     }
 
     public static void SetDbObj(TodoItem todoItem)
     {
-        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
-        var child = instance.getReference()
-                .child("TODOs")
-                .child(Login.CurrentLogin.getName())
-                .child(todoItem.getID());
+        var child = GetLoginNode().child(todoItem.getID());
         child.setValue(todoItem);
     }
 
     public static void SetDbObjs(ArrayList<TodoItem> todoItems)
     {
-        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
-        var parent = instance.getReference()
-                .child("TODOs")
-                .child(Login.CurrentLogin.getName());
+        var parent = GetLoginNode();
         for (var todoItem : todoItems)
         {
             var child = parent.child(todoItem.getID());
@@ -96,22 +92,28 @@ public class FirebaseDb
         }
     }
 
-    public static void DeleteDbObj(TodoItem todoItem)
+    private static String CleanString(String str)
+    {
+        return str.replace("_", "__").replace("@", "_AT_").replace(".", "_DOT_");
+    }
+
+    private static DatabaseReference GetLoginNode()
     {
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
         var child = instance.getReference()
                 .child("TODOs")
-                .child(Login.CurrentLogin.getName())
-                .child(todoItem.getID());
+                .child(CleanString(Login.CurrentLogin.getName()));
+        return child;
+    }
+    public static void DeleteDbObj(TodoItem todoItem)
+    {
+        var child = GetLoginNode().child(todoItem.getID());
         child.removeValue();
     }
 
     public static void DeleteDbObjs()
     {
-        var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
-        var child = instance.getReference()
-                .child("TODOs")
-                .child(Login.CurrentLogin.getName());
+        var child = GetLoginNode();
         child.removeValue();
     }
 }

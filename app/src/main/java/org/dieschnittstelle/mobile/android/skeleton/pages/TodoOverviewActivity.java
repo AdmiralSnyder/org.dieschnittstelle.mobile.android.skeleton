@@ -2,6 +2,7 @@ package org.dieschnittstelle.mobile.android.skeleton.pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -40,10 +41,11 @@ public class TodoOverviewActivity extends AppCompatActivity
             startActivity(detailViewIntent);
         });
 
-        findViewById(R.id.buttonClearLocalDb).setOnClickListener(view -> Db.Instance.DropTable());
-        findViewById(R.id.buttonSyncData).setOnClickListener(view -> Storage.Sync(this::RefreshData));
+        findViewById(R.id.buttonClearLocalDb).setOnClickListener(view -> DoAndRefresh(() -> Db.Instance.DropTable()));
+        findViewById(R.id.buttonSyncData).setOnClickListener(view -> DoAndRefresh(() -> Storage.Sync(this::RefreshData))); //Storage.Sync(this::RefreshData)
         findViewById(R.id.buttonUpsyncData).setOnClickListener(view -> Storage.SyncUp(this::RefreshData));
         findViewById(R.id.buttonDownsyncData).setOnClickListener(view -> Storage.SyncDown(this::RefreshData));
+        findViewById(R.id.buttonClearOnlineDb).setOnClickListener(view -> DoAndRefresh(() -> FirebaseDb.DeleteDbObjs()));
 
         if (!FirebaseDb.IsConnected())
         {
@@ -54,6 +56,12 @@ public class TodoOverviewActivity extends AppCompatActivity
         TodoLV = findViewById(R.id.todoLV);
         TodoAdapter = new TodoItemListViewArrayAdapter(this);
         TodoLV.setAdapter(TodoAdapter);
+    }
+
+    private void DoAndRefresh(Runnable action)
+    {
+        action.run();
+        RefreshData();
     }
 
     @Override

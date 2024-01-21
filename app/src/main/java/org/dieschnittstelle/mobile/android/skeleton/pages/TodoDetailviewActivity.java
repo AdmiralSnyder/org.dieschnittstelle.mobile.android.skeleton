@@ -56,7 +56,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
         Date dueDate = TodoItem.getDueDate();
         if (dueDate != null)
         {
-            datePickerDueDate.updateDate(dueDate.getYear(), dueDate.getMonth(), dueDate.getDate());
+            datePickerDueDate.updateDate(dueDate.getYear() + 1900, dueDate.getMonth(), dueDate.getDate());
             timePickerDueDate.setHour(dueDate.getHours());
             timePickerDueDate.setMinute(dueDate.getMinutes());
         }
@@ -72,7 +72,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
             TodoItem.setIsFavourite(checkboxIsFavourite.isChecked());
 
             TodoItem.setDueDate(new Date(
-                    datePickerDueDate.getYear(),
+                    datePickerDueDate.getYear() - 1900,
                     datePickerDueDate.getMonth(),
                     datePickerDueDate.getDayOfMonth(),
                     timePickerDueDate.getHour(),
