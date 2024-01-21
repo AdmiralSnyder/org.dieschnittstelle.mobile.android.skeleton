@@ -13,6 +13,7 @@ public class DataContracts
         public static final String COLUMN_NAME_IsDone = "IsDone";
         public static final String COLUMN_NAME_IsFavourite = "IsFavourite";
         public static final String COLUMN_NAME_DueDate = "DueDate";
+        public static final String COLUMN_NAME_ContactIDs = "ContactIDs";
 
         public static final int COLUMN_INDEX_ID = 0;
         public static final int COLUMN_INDEX_Name = 1;
@@ -20,6 +21,8 @@ public class DataContracts
         public static final int COLUMN_INDEX_IsDone = 3;
         public static final int COLUMN_INDEX_IsFavourite = 4;
         public static final int COLUMN_INDEX_DueDate = 5;
+
+        public static final int COLUMN_INDEX_ContactIDs = 6;
     }
 
     public static final String SQLITE_SQL_CREATE_ENTRIES =
@@ -29,8 +32,8 @@ public class DataContracts
                     TodoItem.COLUMN_NAME_Description + " TEXT," +
                     TodoItem.COLUMN_NAME_IsDone + " TEXT," +
                     TodoItem.COLUMN_NAME_IsFavourite + " TEXT," +
-                    TodoItem.COLUMN_NAME_DueDate + " TEXT)";
-
+                    TodoItem.COLUMN_NAME_DueDate + " TEXT," +
+                    TodoItem.COLUMN_NAME_ContactIDs + " TEXT)";
 
     public static final String SQLITE_SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TodoItem.TABLE_NAME;

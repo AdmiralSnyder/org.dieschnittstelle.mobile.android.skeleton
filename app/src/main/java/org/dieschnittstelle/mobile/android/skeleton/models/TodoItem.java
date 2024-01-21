@@ -1,6 +1,10 @@
 package org.dieschnittstelle.mobile.android.skeleton.models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TodoItem
 {
@@ -42,7 +46,17 @@ public class TodoItem
     public String getDueDateStr()
     {
         var year = getDueDate().getYear() + 1900;
-        return String.format("%1d-%2$tm-%2$tdT%2$tH:%2$tM:%2$tS",year, getDueDate());
+        return String.format("%1d-%2$tm-%2$tdT%2$tH:%2$tM:%2$tS", year, getDueDate());
+    }
+
+    private List<Long> ContactIDs = new ArrayList<>();
+    @com.google.firebase.database.Exclude
+    public List<Long> getContactIDs() { return ContactIDs; }
+
+    @com.google.firebase.database.PropertyName("Contacts")
+    public String getContactsStr()
+    {
+        return String.join(";", getContactIDs().stream().map(p -> p.toString()).collect(Collectors.toList()));
     }
 
     @com.google.firebase.database.PropertyName("DueDate")

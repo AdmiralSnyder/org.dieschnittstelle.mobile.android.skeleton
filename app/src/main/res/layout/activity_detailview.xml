@@ -7,21 +7,26 @@
     <TextView
         android:id="@+id/labelName"
         android:text="Name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
     <EditText
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/nameLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/checkboxIsDone"
         app:layout_constraintTop_toBottomOf="@id/labelName" />
 
     <TextView
         android:id="@+id/labelDescription"
         android:text="Description"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editName"/>
     <EditText
         android:id="@+id/editDescription"
@@ -32,16 +37,16 @@
 
     <CheckBox
         android:id="@+id/checkboxIsDone"
-        app:layout_constraintTop_toBottomOf="@id/editDescription"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/labelIsDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/labelIsDone"
         android:text="Erledigt"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/editDescription"
-        app:layout_constraintLeft_toRightOf="@id/checkboxIsDone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="wrap_content"
         android:paddingVertical="10dp"
         android:layout_height="wrap_content"/>
@@ -49,14 +54,14 @@
     <CheckBox
         android:id="@+id/checkboxIsFavourite"
         app:layout_constraintTop_toBottomOf="@id/checkboxIsDone"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/checkboxIsDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/labelIsFavourite"
         android:text="Favorit"
-        app:layout_constraintTop_toBottomOf="@id/labelIsDone"
-        app:layout_constraintLeft_toRightOf="@id/checkboxIsFavourite"
+        app:layout_constraintTop_toBottomOf="@id/checkboxIsDone"
+        app:layout_constraintLeft_toLeftOf="@id/labelIsDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -67,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Fälligkeitsdatum"
-        app:layout_constraintTop_toBottomOf="@id/labelIsFavourite" />
+        app:layout_constraintTop_toBottomOf="@id/editDescription" />
     <TimePicker
         android:timePickerMode="spinner"
         android:id="@+id/timePickerDueDate"
@@ -75,6 +80,11 @@
         android:layout_height="wrap_content"
         android:hint="Fälligkeitszeitpunkt"
         app:layout_constraintTop_toBottomOf="@id/datePickerDueDate" />
+    <ListView
+        android:id="@+id/listViewContacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/timePickerDueDate" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonSave"
@@ -85,10 +95,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonAddContact"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/buttonDelete"
+        app:srcCompat="@drawable/baseline_add_white_24dp"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonDelete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/baseline_input_white_24dp"
+        app:srcCompat="@drawable/baseline_clear_white_24dp"
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

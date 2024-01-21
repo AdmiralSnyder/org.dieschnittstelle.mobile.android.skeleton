@@ -51,7 +51,8 @@ public class FirebaseDb
         var instance = FirebaseDatabase.getInstance(Context.getString(R.string.URL_FIREBASE));
         var child = instance.getReference().child("Users");
 
-        SystemClock.sleep(2000);
+        // TODO Enable for review
+        //SystemClock.sleep(2000);
 
         child.get().addOnCompleteListener(new FirebaseLoginListListener(allLogins ->
         {

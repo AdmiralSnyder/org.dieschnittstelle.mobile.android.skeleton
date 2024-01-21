@@ -133,6 +133,18 @@ public class Db
         result.setDescription(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_Description));
         result.setIsDone(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsDone).equals("1"));
         result.setIsFavourite(cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_IsFavourite).equals("1"));
+
+        var contactIDs = result.getContactIDs();
+        var contactIDValuess = cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_ContactIDs);
+        for (String contactID : cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_ContactIDs).split(";"))
+        {
+            if(contactID.isEmpty())
+            {
+                continue;
+            }
+            contactIDs.add(Long.parseLong(contactID));
+        }
+
         var dueDateStr = cursor.getString(DataContracts.TodoItem.COLUMN_INDEX_DueDate);
 
         Date dueDate;
@@ -168,6 +180,7 @@ public class Db
             values.put(DataContracts.TodoItem.COLUMN_NAME_IsFavourite, todoItem.getIsFavourite() ? "1" : "0");
             var dueDate = todoItem.getDueDate();
             values.put(DataContracts.TodoItem.COLUMN_NAME_DueDate, dueDate == null ? null : dueDate.toInstant().toString());
+            values.put(DataContracts.TodoItem.COLUMN_NAME_ContactIDs, todoItem.getContactsStr());
 
             if (inserting)
             {
@@ -200,7 +213,8 @@ public class Db
         try
         {
             db.delete(DataContracts.TodoItem.TABLE_NAME, "1 = 1", null);
-        } finally
+        }
+        finally
         {
             db.close();
         }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayout_todoItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
+
+    <Button
+        android:id="@+id/buttonEmailContact"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="1dp"
+        android:padding="1dp"
+        android:textSize="15dp"
+        app:layout_constraintRight_toLeftOf="@id/buttonSmsContact"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSmsContact"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="1dp"
+        android:padding="1dp"
+        android:textSize="15dp"
+        app:layout_constraintRight_toLeftOf="@id/buttonDeleteContact"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonDeleteContact"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="1dp"
+        android:padding="1dp"
+        android:text="X"
+        android:textColor="@color/design_default_color_error"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
