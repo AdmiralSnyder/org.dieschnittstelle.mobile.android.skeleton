@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuitemSortFavourite"
+        android:title="💖"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuitemSortDate"
+        android:title="📅"
+        app:showAsAction="never" />
+    <group>
+        <item
+            android:id="@+id/menuitemDeleteLocal"
+            android:title="🗑️"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/menuitemDeleteCloud"
+            android:title="🗑️☁"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/menuitemSyncUpDown"
+            android:title="⇕"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/menuitemSyncDown"
+            android:title="⇓"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/menuitemSyncUp"
+            android:title="⇑"
+            app:showAsAction="never"/>
+    </group>
+
+</menu>

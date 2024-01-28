@@ -1,10 +1,12 @@
 package org.dieschnittstelle.mobile.android.skeleton.pages;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,17 +17,12 @@ import org.dieschnittstelle.mobile.android.skeleton.data.Db;
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
 
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 
 public class TodoOverviewActivity extends AppCompatActivity
 {
-    // TODO Sortierung implementieren:
-    // Todos sollen immer nach Erledigt/Nichterledigt sortiert sein und wahlweise nach Wichtigkeit+Datum oder nach Datum+Wichtigkeit (d.h. es gibt insgesamt genau 2
-    // Sortieralternativen). Nicht erledigte Todos sollen vor erledigten Todos angezeigt werden. Eine der beiden Sortieralternativen soll immer aktiv sein, d.h. nicht erst bei Nutzerinteraktion aktiviert werden.
-
-
     private ListView TodoLV;
-    private ArrayList<TodoItem> Todos = new ArrayList<>();
     private TodoItemListViewArrayAdapter TodoAdapter;
 
     @Override
@@ -41,12 +38,6 @@ public class TodoOverviewActivity extends AppCompatActivity
             startActivity(detailViewIntent);
         });
 
-        findViewById(R.id.buttonClearLocalDb).setOnClickListener(view -> DoAndRefresh(() -> Db.Instance.DropTable()));
-        findViewById(R.id.buttonSyncData).setOnClickListener(view -> DoAndRefresh(() -> Storage.Sync(this::RefreshData))); //Storage.Sync(this::RefreshData)
-        findViewById(R.id.buttonUpsyncData).setOnClickListener(view -> Storage.SyncUp(this::RefreshData));
-        findViewById(R.id.buttonDownsyncData).setOnClickListener(view -> Storage.SyncDown(this::RefreshData));
-        findViewById(R.id.buttonClearOnlineDb).setOnClickListener(view -> DoAndRefresh(() -> FirebaseDb.DeleteDbObjs()));
-
         if (!FirebaseDb.IsConnected())
         {
             TextView welcomeTV = findViewById(R.id.welcomeTV);
@@ -56,6 +47,48 @@ public class TodoOverviewActivity extends AppCompatActivity
         TodoLV = findViewById(R.id.todoLV);
         TodoAdapter = new TodoItemListViewArrayAdapter(this);
         TodoLV.setAdapter(TodoAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.overview_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        var id = item.getItemId();
+        if (id == R.id.menuitemSortFavourite)
+        {
+            TodoAdapter.setCompareMode(TodoItemListViewArrayAdapter.CompareModes.FavouriteDate);
+        }
+        else if (id == R.id.menuitemSortDate)
+        {
+            TodoAdapter.setCompareMode(TodoItemListViewArrayAdapter.CompareModes.DateFavourite);
+        }
+        else if (id == R.id.menuitemDeleteCloud)
+        {
+            DoAndRefresh(() -> FirebaseDb.DeleteDbObjs());
+        }
+        else if (id == R.id.menuitemDeleteLocal)
+        {
+            DoAndRefresh(() -> Db.Instance.DropTable());
+        }
+        else if (id == R.id.menuitemSyncDown)
+        {
+            Storage.SyncDown(this::RefreshData);
+        }
+        else if (id == R.id.menuitemSyncUp)
+        {
+            Storage.SyncUp(this::RefreshData);
+        }
+        else if (id == R.id.menuitemSyncUpDown)
+        {
+            Storage.Sync(this::RefreshData);
+        }
+        return true;
     }
 
     private void DoAndRefresh(Runnable action)
@@ -75,5 +108,6 @@ public class TodoOverviewActivity extends AppCompatActivity
     {
         TodoAdapter.clear();
         TodoAdapter.addAll(Db.Instance.GetDbObjs());
+        TodoAdapter.Sort();
     }
 }

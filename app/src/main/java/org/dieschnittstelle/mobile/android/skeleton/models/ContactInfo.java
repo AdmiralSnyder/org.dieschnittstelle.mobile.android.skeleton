@@ -2,27 +2,27 @@ package org.dieschnittstelle.mobile.android.skeleton.models;
 import org.dieschnittstelle.mobile.android.skeleton.pages.TodoDetailviewActivity;
 public class ContactInfo
 {
-    private long ContactID;
-    public long getContactID() { return ContactID; }
-    public void setContactID(long contactID) { ContactID = contactID; }
+    private long _ContactID;
+    public long getContactID() { return _ContactID; }
+    public void setContactID(long contactID) { _ContactID = contactID; }
 
-    private TodoDetailviewActivity Parent;
-    public TodoDetailviewActivity getParent() { return Parent; }
-    public void setParent(TodoDetailviewActivity parent) { Parent = parent; }
+    private TodoDetailviewActivity _Parent;
+    public TodoDetailviewActivity getParent() { return _Parent; }
+    public void setParent(TodoDetailviewActivity parent) { _Parent = parent; }
 
-    private TodoItem TodoItem;
-    public TodoItem getTodoItem() { return TodoItem; }
-    public void setTodoItem(TodoItem todoItem) { TodoItem = todoItem; }
+    private TodoItem _TodoItem;
+    public TodoItem getTodoItem() { return _TodoItem; }
+    public void setTodoItem(TodoItem todoItem) { _TodoItem = todoItem; }
 
-    private String Name;
-    public String getName() { return Name; }
-    public void setName(String name) { Name = name; }
+    private String _Name;
+    public String getName() { return _Name; }
+    public void setName(String name) { _Name = name; }
 
-    private String MobilePhone;
-    public String getMobilePhone() { return MobilePhone; }
-    public void setMobilePhone(String mobilePhone) { MobilePhone = mobilePhone; }
+    private String _MobilePhone;
+    public String getMobilePhone() { return _MobilePhone; }
+    public void setMobilePhone(String mobilePhone) { _MobilePhone = mobilePhone; }
 
-    private String Email;
-    public String getEmail() { return Email; }
-    public void setEmail(String email) { Email = email; }
+    private String _Email;
+    public String getEmail() { return _Email; }
+    public void setEmail(String email) { _Email = email; }
 }

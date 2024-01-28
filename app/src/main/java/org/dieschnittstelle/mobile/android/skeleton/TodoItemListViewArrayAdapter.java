@@ -10,16 +10,74 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
 import org.dieschnittstelle.mobile.android.skeleton.pages.TodoDetailviewActivity;
 
+import java.util.Comparator;
 import java.util.Date;
 public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 {
     Context mContext;
+
+    @Override
+    public void sort(@NonNull Comparator<? super TodoItem> comparator)
+    {
+        super.sort(SortDatesComparer);
+    }
+
+    public enum CompareModes
+    {
+        FavouriteDate,
+        DateFavourite,
+    }
+
+    private CompareModes _CompareMode;
+    public void setCompareMode(CompareModes compareMode)
+    {
+        SortDatesComparer = compareMode == CompareModes.FavouriteDate
+                ? FavouriteFirstComparer
+                : DateFirstComparer;
+        Sort();
+    }
+
+    public void Sort()
+    {
+        sort(SortDatesComparer);
+    }
+
+    private static Date getDateOnly(Date date) { return new Date(date.getYear(), date.getMonth(), date.getDate()); }
+
+    private Comparator<TodoItem> SortDatesComparer = FavouriteFirstComparer;
+
+    private static Comparator<TodoItem> FavouriteFirstComparer = (o1, o2) -> {
+        int res = -Boolean.compare(o1.getIsDone(), o2.getIsDone());
+        if (res == 0)
+        {
+            res = -Boolean.compare(o1.getIsFavourite(), o2.getIsFavourite());
+            if (res == 0)
+            {
+                res = getDateOnly(o1.getDueDate()).compareTo(getDateOnly(o2.getDueDate()));
+            }
+        }
+        return res;
+    };
+
+    private static Comparator<TodoItem> DateFirstComparer = (o1, o2) -> {
+        int res = -Boolean.compare(o1.getIsDone(), o2.getIsDone());
+        if (res == 0)
+        {
+            res = getDateOnly(o1.getDueDate()).compareTo(getDateOnly(o2.getDueDate()));
+            if (res == 0)
+            {
+                res = -Boolean.compare(o1.getIsFavourite(), o2.getIsFavourite());
+            }
+        }
+        return res;
+    };
 
     public TodoItemListViewArrayAdapter(Context context)
     {
@@ -75,6 +133,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
                 view.setBackgroundColor(todoItem2.getIsFavourite()
                         ? Color.argb(255, 255, 0, 0)
                         : Color.argb(255, 0, 255, 0));
+                Sort();
             });
 
             doneCB.setOnClickListener(view ->
@@ -85,6 +144,7 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 
                 todoItem2.setIsDone(doneCB.isChecked());
                 Storage.SetDbObj(todoItem2);
+                Sort();
             });
         }
 

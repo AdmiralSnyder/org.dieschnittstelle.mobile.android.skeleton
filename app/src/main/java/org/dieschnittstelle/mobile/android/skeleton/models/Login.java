@@ -1,25 +1,27 @@
 package org.dieschnittstelle.mobile.android.skeleton.models;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class Login
 {
     public static final int PASSWORDLENGTH = 6;
 
     public static final Login CurrentLogin = new Login();
-    private String Name;
-    public String getName() { return Name; }
 
-    public void setName(String email) { Name = email; }
+    private String _Name;
+    @com.google.firebase.database.PropertyName("Name")
+    public String getName() { return _Name; }
+    @com.google.firebase.database.PropertyName("Name")
+    public void setName(String email) { _Name = email; }
 
-    private String Password;
-    public String getPassword() { return Password; }
-    public void setPassword(String password) { Password = password; }
 
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    private String _Password;
+    @com.google.firebase.database.PropertyName("Password")
+    public String getPassword() { return _Password; }
+    @com.google.firebase.database.PropertyName("Password")
+    public void setPassword(String password) { _Password = password; }
 
-    public static final Pattern VALID_PASSWORD_REGEX =
-            Pattern.compile("^[0-9][0-9][0-9][0-9][0-9][0-9]$");
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static final Pattern VALID_PASSWORD_REGEX = Pattern.compile("^[0-9][0-9][0-9][0-9][0-9][0-9]$");
 
     public static String ValidateLogin(String login)
     {
@@ -53,6 +55,6 @@ public class Login
 
     public boolean IsOkay()
     {
-        return ValidatePassword(Password) == null && ValidateLogin(Name) == null;
+        return ValidatePassword(_Password) == null && ValidateLogin(_Name) == null;
     }
 }

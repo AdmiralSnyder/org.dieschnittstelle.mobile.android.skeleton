@@ -43,7 +43,7 @@ public class ContactInfoListViewArrayAdapter extends ArrayAdapter<ContactInfo>
         buttonEmailContact.setVisibility(contactInfo.getEmail() == null ? View.GONE : View.VISIBLE);
         buttonEmailContact.setOnClickListener(view ->
         {
-            Uri emailUri = Uri.parse("mailto:" + contactInfo.getEmail() + "?subject=Termin:" + contactInfo.getTodoItem().getName() + " am " + contactInfo.getTodoItem().getDueDateStr());
+            Uri emailUri = Uri.parse("mailto:" + contactInfo.getEmail() + "?subject=Termin:" + contactInfo.getTodoItem().getName() + " am " + contactInfo.getTodoItem().getDueDateStr() + "?body=" + contactInfo.getTodoItem().getDescription());
 
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
             mContext.startActivity(emailIntent);
@@ -54,7 +54,7 @@ public class ContactInfoListViewArrayAdapter extends ArrayAdapter<ContactInfo>
         buttonSmsContact.setVisibility(contactInfo.getMobilePhone() == null ? View.GONE : View.VISIBLE);
         buttonSmsContact.setOnClickListener(view ->
         {
-            Uri smsUri = Uri.parse("smsto:" + contactInfo.getMobilePhone() + "?body=Termin:" + contactInfo.getTodoItem().getName() + " am " + contactInfo.getTodoItem().getDueDateStr());
+            Uri smsUri = Uri.parse("smsto:" + contactInfo.getMobilePhone() + "?body=Termin:" + contactInfo.getTodoItem().getName() + " am " + contactInfo.getTodoItem().getDueDateStr() + "\n" +  contactInfo.getTodoItem().getDescription());
 
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, smsUri);
             mContext.startActivity(emailIntent);
