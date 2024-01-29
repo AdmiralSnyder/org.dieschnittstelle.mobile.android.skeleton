@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+<data>
+    <variable
+        name="VM"
+        type="org.dieschnittstelle.mobile.android.skeleton.viewmodels.TodoDetailViewModel" />
+</data>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,28 +13,29 @@
 
     <TextView
         android:id="@+id/labelName"
-        android:text="Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/nameLabel"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/nameLabel"
+        android:hint="Name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/checkboxIsDone"
         app:layout_constraintTop_toBottomOf="@id/labelName" />
 
     <TextView
         android:id="@+id/labelDescription"
-        android:text="Description"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editName"/>
+        app:layout_constraintTop_toBottomOf="@id/editName" />
+
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="match_parent"
@@ -37,49 +45,53 @@
 
     <CheckBox
         android:id="@+id/checkboxIsDone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/labelIsDone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toLeftOf="@id/labelIsDone"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/labelIsDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
         android:text="Erledigt"
         android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="wrap_content"
-        android:paddingVertical="10dp"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
         android:id="@+id/checkboxIsFavourite"
-        app:layout_constraintTop_toBottomOf="@id/checkboxIsDone"
-        app:layout_constraintLeft_toLeftOf="@id/checkboxIsDone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/checkboxIsDone"
+        app:layout_constraintTop_toBottomOf="@id/checkboxIsDone" />
+
     <TextView
         android:id="@+id/labelIsFavourite"
-        android:text="Favorit"
-        app:layout_constraintTop_toBottomOf="@id/checkboxIsDone"
-        app:layout_constraintLeft_toLeftOf="@id/labelIsDone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Favorit"
+        app:layout_constraintLeft_toLeftOf="@id/labelIsDone"
+        app:layout_constraintTop_toBottomOf="@id/checkboxIsDone" />
 
     <DatePicker
-        android:calendarViewShown="false"
         android:id="@+id/datePickerDueDate"
-        android:datePickerMode="spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
         android:hint="Fälligkeitsdatum"
         app:layout_constraintTop_toBottomOf="@id/editDescription" />
+
     <TimePicker
-        android:timePickerMode="spinner"
         android:id="@+id/timePickerDueDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Fälligkeitszeitpunkt"
+        android:timePickerMode="spinner"
         app:layout_constraintTop_toBottomOf="@id/datePickerDueDate" />
+
     <ListView
         android:id="@+id/listViewContacts"
         android:layout_width="match_parent"
@@ -88,26 +100,29 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonSave"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@id/buttonSave"
-        app:srcCompat="@drawable/baseline_save_white_24dp"
-        android:layout_margin="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/baseline_save_white_24dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonAddContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/buttonDelete"
-        app:srcCompat="@drawable/baseline_add_white_24dp"
-        android:layout_margin="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:srcCompat="@drawable/baseline_add_white_24dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/baseline_clear_white_24dp"
-        android:layout_margin="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:srcCompat="@drawable/baseline_clear_white_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

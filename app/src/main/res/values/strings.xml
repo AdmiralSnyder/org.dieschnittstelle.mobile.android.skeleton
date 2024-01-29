@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MAD TODOs</string>
     <string name="OverviewHeading">Übersicht der TODOs</string>
+    <string name="Offline"> - Offline</string>
     <string name="descriptionLabel">Description</string>
     <string name="nameLabel">Name</string>
     <string name="label_apptitle_loginpage">MAD TODOs</string>
@@ -10,4 +11,8 @@
     <string name="downsync_data">Downsync Data</string>
     <string name="upsync_data">Upsync Data</string>
     <string name="sync_data">Sync Data</string>
+    <string name="hint_login_name">Email</string>
+    <string name="hint_login_password">Passwort</string>
+    <string name="dateformat_overview">%1$td.%1$tm.%1$tY  %1$tH:%1$tM</string>
+
 </resources>

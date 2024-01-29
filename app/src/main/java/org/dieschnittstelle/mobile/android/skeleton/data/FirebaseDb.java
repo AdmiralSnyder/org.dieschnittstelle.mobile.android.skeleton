@@ -28,6 +28,15 @@ public class FirebaseDb
     {
         return _IsConnected;
     }
+    public static boolean IsConnected2()
+    {
+        return _IsConnected;
+    }
+
+    public static String IsConnectedText()
+    {
+        return "KEKSE";
+    }
     private static Context Context;
     public static void Init(Context context)
     {

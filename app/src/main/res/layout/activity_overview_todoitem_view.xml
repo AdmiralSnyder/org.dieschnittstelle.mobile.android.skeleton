@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/constraintLayout_todoItem"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <data>
+        <variable
+            name="VM"
+            type="org.dieschnittstelle.mobile.android.skeleton.TodoItemListViewArrayAdapter" />
+
+        <variable
+            name="Item"
+            type="org.dieschnittstelle.mobile.android.skeleton.models.TodoItem" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraintLayout_todoItem"
+    android:background="@{!Item.IsDone &amp;&amp; Item.IsDue() ? @color/dueColor : @color/noDueColor}"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
+    android:layout_width="fill_parent">
 
     <CheckBox
         android:id="@+id/doneCB"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:checked="@={Item.isDone}"
+        android:onClick="@{VM.SetDbObjAndSort}"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/nameTV"
         android:textSize="22dp"
+        android:text="@{Item.Name}"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/doneCB"
         android:layout_height="wrap_content"
@@ -23,6 +38,7 @@
     </TextView>
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/dueDateTV"
+        android:text="@{Item.DueDate == null ? null : String.format(@string/dateformat_overview, Item.DueDate)}"
         android:paddingVertical="10dp"
         app:layout_constraintTop_toBottomOf="@id/nameTV"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,14 +48,18 @@
         android:text="!"
         android:layout_marginHorizontal="20dp"
         android:id="@+id/toggleIsFavouriteButton"
+
         app:layout_constraintTop_toBottomOf="@id/nameTV"
         app:layout_constraintLeft_toRightOf="@id/dueDateTV"
         android:layout_width="wrap_content"
+        android:background="@{Item.isFavourite ? @color/favColor : @color/noFavColor}"
+        android:onClick="@{VM.ToggleFavourite}"
         android:layout_height="wrap_content"/>
     <Button
         android:text="..."
         android:layout_marginHorizontal="20dp"
         android:id="@+id/showDetailsButton"
+        android:onClick="@{VM.ShowTodoItemDetails}"
         app:layout_constraintTop_toBottomOf="@id/nameTV"
         app:layout_constraintLeft_toRightOf="@id/toggleIsFavouriteButton"
         android:layout_width="wrap_content"
@@ -47,3 +67,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

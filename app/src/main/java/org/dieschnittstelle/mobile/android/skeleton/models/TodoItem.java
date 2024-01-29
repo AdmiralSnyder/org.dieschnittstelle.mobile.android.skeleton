@@ -72,4 +72,9 @@ public class TodoItem
     {
         return String.join(";", getContactIDs().stream().map(p -> p.toString()).collect(Collectors.toList()));
     }
+
+    public boolean IsDue()
+    {
+        return getDueDate().before(new Date());
+    }
 }

@@ -12,22 +12,28 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
+import org.dieschnittstelle.mobile.android.skeleton.databinding.ActivityOverviewTodoitemViewBinding;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
 import org.dieschnittstelle.mobile.android.skeleton.pages.TodoDetailviewActivity;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
 public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
 {
-    Context mContext;
-
-    @Override
-    public void sort(@NonNull Comparator<? super TodoItem> comparator)
+    public TodoItemListViewArrayAdapter(Context context, List<TodoItem> list)
     {
-        super.sort(SortDatesComparer);
+        super(context, R.layout.activity_overview_todoitem_view, list);
+        mContext = context;
     }
+
+    private final Context mContext;
+    private Comparator<TodoItem> SortDatesComparer = FavouriteFirstComparer;
 
     public enum CompareModes
     {
@@ -35,7 +41,6 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         DateFavourite,
     }
 
-    private CompareModes _CompareMode;
     public void setCompareMode(CompareModes compareMode)
     {
         SortDatesComparer = compareMode == CompareModes.FavouriteDate
@@ -49,28 +54,25 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         sort(SortDatesComparer);
     }
 
-    private static Date getDateOnly(Date date) { return new Date(date.getYear(), date.getMonth(), date.getDate()); }
 
-    private Comparator<TodoItem> SortDatesComparer = FavouriteFirstComparer;
-
-    private static Comparator<TodoItem> FavouriteFirstComparer = (o1, o2) -> {
-        int res = -Boolean.compare(o1.getIsDone(), o2.getIsDone());
+    private static final Comparator<TodoItem> FavouriteFirstComparer = (o1, o2) -> {
+        int res = Boolean.compare(o1.getIsDone(), o2.getIsDone());
         if (res == 0)
         {
             res = -Boolean.compare(o1.getIsFavourite(), o2.getIsFavourite());
             if (res == 0)
             {
-                res = getDateOnly(o1.getDueDate()).compareTo(getDateOnly(o2.getDueDate()));
+                res = CompareDates(o1.getDueDate(), o2.getDueDate());
             }
         }
         return res;
     };
 
-    private static Comparator<TodoItem> DateFirstComparer = (o1, o2) -> {
-        int res = -Boolean.compare(o1.getIsDone(), o2.getIsDone());
+    private static final Comparator<TodoItem> DateFirstComparer = (o1, o2) -> {
+        int res = Boolean.compare(o1.getIsDone(), o2.getIsDone());
         if (res == 0)
         {
-            res = getDateOnly(o1.getDueDate()).compareTo(getDateOnly(o2.getDueDate()));
+            res = CompareDates(o1.getDueDate(), o2.getDueDate());
             if (res == 0)
             {
                 res = -Boolean.compare(o1.getIsFavourite(), o2.getIsFavourite());
@@ -79,95 +81,86 @@ public class TodoItemListViewArrayAdapter extends ArrayAdapter<TodoItem>
         return res;
     };
 
-    public TodoItemListViewArrayAdapter(Context context)
+    private static int CompareDates(Date d1, Date d2)
     {
-        super(context, R.layout.activity_overview_todoitem_view);
-        mContext = context;
+        var res = Integer.compare(d1.getYear(), d2.getYear());
+        if (res == 0)
+        {
+            res = Integer.compare(d1.getMonth(), d2.getMonth());
+            if (res == 0)
+            {
+                res = Integer.compare(d1.getDate(), d2.getDate());
+            }
+        }
+        return res;
     }
 
+
+
+    private void DoWithTodoItem(View view, Consumer<TodoItem> continuation)
+    {
+        var binding = DataBindingUtil.findBinding(view);
+        if (binding instanceof ActivityOverviewTodoitemViewBinding)
+        {
+            continuation.accept(((ActivityOverviewTodoitemViewBinding) binding).getItem());
+        }
+    }
+
+    public void SetDbObjAndSort(View view)
+    {
+        DoWithTodoItem(view, todo ->
+        {
+            Storage.SetDbObj(todo);
+
+            Sort();
+        });
+    }
+
+    public void ToggleFavourite(View view)
+    {
+        DoWithTodoItem(view, todo ->
+        {
+            todo.setIsFavourite(!todo.getIsFavourite());
+        });
+        SetDbObjAndSort(view);
+    }
+
+    public void ShowTodoItemDetails(View view)
+    {
+        DoWithTodoItem(view, todo ->
+        {
+            Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
+            detailViewIntent.putExtra("todoItemID", todo.getID());
+            mContext.startActivity(detailViewIntent);
+        });
+    }
+
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         TodoItem todoItem = getItem(position);
-        final View result;
 
-        Button toggleIsFavouriteButton;
-        CheckBox doneCB;
-        Button showDetailsButton;
-        ConstraintLayout constraintLayout_todoItem;
+        ActivityOverviewTodoitemViewBinding itemBinding;
+        final View result;
 
         var newView = convertView == null;
         if (newView)
         {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.activity_overview_todoitem_view, parent, false);
+            itemBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_overview_todoitem_view, parent, false);
+            convertView = itemBinding.getRoot();
         }
-
-        convertView.setTag(todoItem);
-        showDetailsButton = convertView.findViewById(R.id.showDetailsButton);
-        showDetailsButton.setTag(todoItem);
-
-        toggleIsFavouriteButton = convertView.findViewById(R.id.toggleIsFavouriteButton);
-        toggleIsFavouriteButton.setTag((todoItem));
-
-        constraintLayout_todoItem = convertView.findViewById(R.id.constraintLayout_todoItem);
-
-        doneCB = convertView.findViewById(R.id.doneCB);
-        doneCB.setTag(todoItem);
-
-        if (newView)
+        else
         {
-            showDetailsButton.setOnClickListener(view ->
-            {
-                TodoItem todoItem2 = (TodoItem) view.getTag();
-                Intent detailViewIntent = new Intent(mContext, TodoDetailviewActivity.class);
-                detailViewIntent.putExtra("todoItemID", todoItem2.getID());
-                mContext.startActivity(detailViewIntent);
-            });
-
-            toggleIsFavouriteButton.setOnClickListener(view ->
-            {
-                TodoItem todoItem2 = (TodoItem) view.getTag();
-                todoItem2.setIsFavourite(!todoItem2.getIsFavourite());
-                Storage.SetDbObj(todoItem2);
-                view.setBackgroundColor(todoItem2.getIsFavourite()
-                        ? Color.argb(255, 255, 0, 0)
-                        : Color.argb(255, 0, 255, 0));
-                Sort();
-            });
-
-            doneCB.setOnClickListener(view ->
-            {
-                TodoItem todoItem2 = (TodoItem) view.getTag();
-
-                if (todoItem2.getIsDone() == doneCB.isChecked()) { return; }
-
-                todoItem2.setIsDone(doneCB.isChecked());
-                Storage.SetDbObj(todoItem2);
-                Sort();
-            });
+            itemBinding = DataBindingUtil.getBinding(convertView);
         }
+
+        assert itemBinding != null;
+        itemBinding.setItem(todoItem);
+        itemBinding.setVM(this);
 
         result = convertView;
 
-        toggleIsFavouriteButton.setBackgroundColor(todoItem.getIsFavourite()
-                ? Color.argb(255, 255, 0, 0)
-                : Color.argb(255, 0, 255, 0));
-        doneCB.setChecked(todoItem.getIsDone());
-
-        constraintLayout_todoItem.setBackgroundColor(!todoItem.getIsDone() && todoItem.getDueDate().before(new Date())
-                ? Color.argb(255, 120, 255, 255)
-                : Color.argb(255, 255, 255, 255));
-
-        TextView nameTV = result.findViewById(R.id.nameTV);
-        nameTV.setText(todoItem.getName());
-
-        var dueDate = todoItem.getDueDate();
-        if (dueDate != null)
-        {
-            TextView dueDateTV = result.findViewById(R.id.dueDateTV);
-            dueDateTV.setText(String.format("%1$td.%1$tm.%1$tY  %1$tH:%1$tM", dueDate));
-        }
         return result;
     }
 }

@@ -1,12 +1,13 @@
 package org.dieschnittstelle.mobile.android.skeleton.pages;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,38 +16,44 @@ import org.dieschnittstelle.mobile.android.skeleton.R;
 import org.dieschnittstelle.mobile.android.skeleton.TodoItemListViewArrayAdapter;
 import org.dieschnittstelle.mobile.android.skeleton.data.Db;
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
-import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
+import org.dieschnittstelle.mobile.android.skeleton.databinding.ActivityTodoOverviewBinding;
+import org.dieschnittstelle.mobile.android.skeleton.viewmodels.TodoOverviewViewModel;
 
-import java.util.Comparator;
-import java.util.Date;
-
-public class TodoOverviewActivity extends AppCompatActivity
+public class TodoOverviewActivity extends ActivityBase<TodoOverviewViewModel>
 {
     private ListView TodoLV;
     private TodoItemListViewArrayAdapter TodoAdapter;
 
     @Override
+    public Class<TodoOverviewViewModel> getViewModelClass() { return TodoOverviewViewModel.class; }
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_overview);
 
-        var buttonAdd = findViewById(R.id.buttonAdd);
-        buttonAdd.setOnClickListener(view ->
-        {
-            Intent detailViewIntent = new Intent(this, TodoDetailviewActivity.class);
-            startActivity(detailViewIntent);
-        });
+        var dataBinding = (ActivityTodoOverviewBinding)DataBindingUtil.setContentView(this, R.layout.activity_todo_overview);
+
+        var vm = getViewModel();
+        dataBinding.setVM(vm);
 
         if (!FirebaseDb.IsConnected())
         {
             TextView welcomeTV = findViewById(R.id.welcomeTV);
-            welcomeTV.setText(R.string.OverviewHeading + " - OFFLINE");
+            welcomeTV.setText("Übersicht der TODOs - OFFLINE");
         }
 
         TodoLV = findViewById(R.id.todoLV);
-        TodoAdapter = new TodoItemListViewArrayAdapter(this);
+        TodoAdapter = new TodoItemListViewArrayAdapter(this, vm.getTodoItems());
         TodoLV.setAdapter(TodoAdapter);
+    }
+
+    public void AddTodoItem(View view) { startActivity(new Intent(this, TodoDetailviewActivity.class)); }
+
+    @Override
+    protected void onViewModelInit(TodoOverviewViewModel viewModel)
+    {
+        super.onViewModelInit(viewModel);
+        RefreshData();
     }
 
     @Override
@@ -70,7 +77,7 @@ public class TodoOverviewActivity extends AppCompatActivity
         }
         else if (id == R.id.menuitemDeleteCloud)
         {
-            DoAndRefresh(() -> FirebaseDb.DeleteDbObjs());
+            DoAndRefresh(FirebaseDb::DeleteDbObjs);
         }
         else if (id == R.id.menuitemDeleteLocal)
         {
@@ -98,16 +105,22 @@ public class TodoOverviewActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart()
+    protected void onRestart()
     {
-        super.onStart();
+        // kommt immer, wenn wir aus einer anderen activity zurückkehren - in dem Fall, aus der Detail-Acitivity.
+        // kommt NICHT, wenn der bildschirm gedreht wurde.
+        super.onRestart();
         RefreshData();
     }
 
     protected void RefreshData()
     {
+        // TODO warten oder nicht?
+        //SystemClock.sleep(2000);
+
         TodoAdapter.clear();
         TodoAdapter.addAll(Db.Instance.GetDbObjs());
+
         TodoAdapter.Sort();
     }
 }

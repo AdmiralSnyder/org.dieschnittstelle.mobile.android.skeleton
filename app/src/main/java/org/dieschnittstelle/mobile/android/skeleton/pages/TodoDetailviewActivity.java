@@ -24,48 +24,73 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.dieschnittstelle.mobile.android.skeleton.ContactInfoListViewArrayAdapter;
 import org.dieschnittstelle.mobile.android.skeleton.R;
 import org.dieschnittstelle.mobile.android.skeleton.TodoItemListViewArrayAdapter;
 import org.dieschnittstelle.mobile.android.skeleton.data.Db;
 import org.dieschnittstelle.mobile.android.skeleton.data.Storage;
+import org.dieschnittstelle.mobile.android.skeleton.databinding.ActivityDetailviewBinding;
+import org.dieschnittstelle.mobile.android.skeleton.databinding.ActivityTodoOverviewBinding;
 import org.dieschnittstelle.mobile.android.skeleton.models.ContactInfo;
 import org.dieschnittstelle.mobile.android.skeleton.models.TodoItem;
+import org.dieschnittstelle.mobile.android.skeleton.viewmodels.TodoDetailViewModel;
+import org.dieschnittstelle.mobile.android.skeleton.viewmodels.TodoOverviewViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TodoDetailviewActivity extends AppCompatActivity
+public class TodoDetailviewActivity extends ActivityBase<TodoDetailViewModel>
 {
-    TodoItem TodoItem;
+    @Override
+    protected Class<TodoDetailViewModel> getViewModelClass() { return TodoDetailViewModel.class; }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detailview);
+
+        var dataBinding = (ActivityDetailviewBinding) DataBindingUtil.setContentView(this, R.layout.activity_detailview);
+
+        var vm = getViewModel();
+        dataBinding.setVM(vm);
 
         var intent = getIntent();
-        var todoItemID = intent.getStringExtra("todoItemID");
 
-        if (todoItemID == null)
+        vm.setTodoItemID(intent.getStringExtra("todoItemID"));
+    }
+
+    @Override
+    protected void onViewModelInit(TodoDetailViewModel viewModel)
+    {
+        super.onViewModelInit(viewModel);
+
+        var itemID =viewModel.getTodoItemID();
+        if (itemID == null)
         {
-            TodoItem = new TodoItem();
+            viewModel.setTodoItem(new TodoItem());
+            findViewById(R.id.buttonDelete).setVisibility(View.GONE);
         }
         else
         {
-            TodoItem = Db.Instance.GetDbObj(todoItemID);
+            viewModel.setTodoItem(Db.Instance.GetDbObj(itemID));
+            findViewById(R.id.buttonDelete).setVisibility(View.VISIBLE);
         }
 
+        var todoItem = viewModel.getTodoItem();
+        // ich benutze kein direktes DataBinding, da ich erst-beim-speichern die Werte ins Objekt packen will.
         EditText editName = findViewById(R.id.editName);
-        editName.setText(TodoItem.getName());
+        editName.setText(todoItem.getName());
+
         EditText editDescription = findViewById(R.id.editDescription);
-        editDescription.setText(TodoItem.getDescription());
+        editDescription.setText(todoItem.getDescription());
 
         CheckBox checkboxIsDone = findViewById(R.id.checkboxIsDone);
-        checkboxIsDone.setChecked(TodoItem.getIsDone());
+        checkboxIsDone.setChecked(todoItem.getIsDone());
         CheckBox checkboxIsFavourite = findViewById(R.id.checkboxIsFavourite);
-        checkboxIsFavourite.setChecked(TodoItem.getIsFavourite());
+        checkboxIsFavourite.setChecked(todoItem.getIsFavourite());
 
         ListView listViewContacts = findViewById(R.id.listViewContacts);
 
@@ -73,15 +98,15 @@ public class TodoDetailviewActivity extends AppCompatActivity
         listViewContacts.setAdapter(ContactInfoAdapter);
 
 
-        for (long contactID : TodoItem.getContactIDs())
+        for (long contactID : todoItem.getContactIDs())
         {
-            ContactInfoAdapter.add(LoadContactData(contactID));
+            ContactInfoAdapter.add(LoadContactData(contactID, todoItem));
         }
 
         DatePicker datePickerDueDate = findViewById(R.id.datePickerDueDate);
         TimePicker timePickerDueDate = findViewById(R.id.timePickerDueDate);
 
-        Date dueDate = TodoItem.getDueDate();
+        Date dueDate = todoItem.getDueDate();
         if (dueDate != null)
         {
             datePickerDueDate.updateDate(dueDate.getYear() + 1900, dueDate.getMonth(), dueDate.getDate());
@@ -89,17 +114,15 @@ public class TodoDetailviewActivity extends AppCompatActivity
             timePickerDueDate.setMinute(dueDate.getMinutes());
         }
 
-        //...
-
         var buttonSave = findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(view ->
         {
-            TodoItem.setName(editName.getText().toString());
-            TodoItem.setDescription(editDescription.getText().toString());
-            TodoItem.setIsDone(checkboxIsDone.isChecked());
-            TodoItem.setIsFavourite(checkboxIsFavourite.isChecked());
+            todoItem.setName(editName.getText().toString());
+            todoItem.setDescription(editDescription.getText().toString());
+            todoItem.setIsDone(checkboxIsDone.isChecked());
+            todoItem.setIsFavourite(checkboxIsFavourite.isChecked());
 
-            TodoItem.setDueDate(new Date(
+            todoItem.setDueDate(new Date(
                     datePickerDueDate.getYear() - 1900,
                     datePickerDueDate.getMonth(),
                     datePickerDueDate.getDayOfMonth(),
@@ -107,7 +130,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
                     timePickerDueDate.getMinute()));
             //...
 
-            Storage.SetDbObj(TodoItem);
+            Storage.SetDbObj(todoItem);
             finish();
         });
 
@@ -123,7 +146,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
                     .setMessage("TODO wirklich löschen?")
                     .setPositiveButton("Yes", (dialog, button) ->
                     {
-                        Storage.DeleteDbObj(TodoItem);
+                        Storage.DeleteDbObj(todoItem);
                         finish();
                     })
                     .setNegativeButton("No", null)
@@ -165,8 +188,9 @@ public class TodoDetailviewActivity extends AppCompatActivity
 
     private void AddContactData(long contactID)
     {
-        TodoItem.getContactIDs().add(contactID);
-        var contactInfo = LoadContactData(contactID);
+        var todoItem = getViewModel().getTodoItem();
+        todoItem.getContactIDs().add(contactID);
+        var contactInfo = LoadContactData(contactID, todoItem);
         if (contactInfo != null)
         {
             ContactInfoAdapter.add(contactInfo);
@@ -175,16 +199,16 @@ public class TodoDetailviewActivity extends AppCompatActivity
 
     public void DeleteContact(int position)
     {
-        TodoItem.getContactIDs().remove(position);
+        getViewModel().getTodoItem().getContactIDs().remove(position);
         ContactInfoAdapter.remove(ContactInfoAdapter.getItem(position));
     }
 
-    private ContactInfo LoadContactData(long contactID)
+    private ContactInfo LoadContactData(long contactID, TodoItem todoItem)
     {
         ContactInfo result = new ContactInfo();
         result.setContactID(contactID);
         result.setParent(this);
-        result.setTodoItem(TodoItem);
+        result.setTodoItem(todoItem);
 
         var contactIDParam = new String[]{String.valueOf(contactID)};
         var contactCursor = getContentResolver()
@@ -225,7 +249,7 @@ public class TodoDetailviewActivity extends AppCompatActivity
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
                         contactIDParam, null);
         var emailCursorAddressColIdx = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
-        var emailCursorTypeColIdx = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE);
+        //var emailCursorTypeColIdx = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE);
         while (emailCursor.moveToNext())
         {
             var address = emailCursor.getString(emailCursorAddressColIdx);
